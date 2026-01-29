@@ -142,3 +142,51 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'user_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/user_sync.log',
+            'formatter': 'verbose',
+        },
+        'product_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/product_sync.log',
+            'formatter': 'verbose',
+        },
+        'cart_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/cart_sync.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'sync_user': {
+            'handlers': ['user_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'sync_product': {
+            'handlers': ['product_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'sync_cart': {
+            'handlers': ['cart_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
