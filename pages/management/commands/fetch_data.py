@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from users.models import ExternalUser, Address, Company
 from products.models import ExternalProduct, Tag
 from carts.models import ExternalCart, Product
+from .data_utils import export_json, export_csv
 
 user_logger = logging.getLogger('sync_user')
 product_logger = logging.getLogger('sync_product')
@@ -155,6 +156,9 @@ class Command(BaseCommand):
             else:
                 user_logger.info(f"USER SYNCED: {username}")
 
+            export_json(users, 'backup_users.json')
+            export_csv(users, 'backup_users.csv')
+
         self.stdout.write(self.style.SUCCESS(f'Successfully processed {len(users)} users'))
 
     def handleProduct(self, *args, **kwargs):
@@ -199,13 +203,15 @@ class Command(BaseCommand):
             else:
                 product_logger.info(f"PRODUCT CREATED: {product_data['title']} (ID: {ext_id})")
 
+            export_json(products, 'backup_products.json')
+            export_csv(products, 'backup_products.csv')
 
         self.stdout.write(self.style.SUCCESS(f'Successfully processed {len(products)} products'))    
+    
     def handleCarts(self, *args, **kwargs):
         self.stdout.write("Fetching Carts data...")    
         response = requests.get('https://dummyjson.com/carts?limit=50')
-        data = response.json()
-        carts_data = data.get('carts', [])
+        carts_data = response.json().get('carts', [])
         all_users = list(ExternalUser.objects.all().order_by('id'))
 
         for cart_json, user_json in zip(carts_data, all_users):
@@ -251,4 +257,7 @@ class Command(BaseCommand):
             
             cart_obj.products.set(product_instances)
 
+            export_json(carts_data, 'backup_carts_data.json')
+            export_csv(carts_data, 'backup_carts_data.csv')
+            
         self.stdout.write(self.style.SUCCESS(f"Successfully processed {len(carts_data)} carts"))
