@@ -7,7 +7,6 @@ This project facilitates automated data synchronization from the DummyJSON API (
 ## Table of Contents
 
 - [Standard Development Commands](#standard-development-commands)
-- [Core Logic and Implementation](#core-logic-and-implementation-crud--sync)
 - [Frontend Data Visualization](#frontend-data-visualization)
 - [Environment Configuration](#environment-configuration-env)
 
